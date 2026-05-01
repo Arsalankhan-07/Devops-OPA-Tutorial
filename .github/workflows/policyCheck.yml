@@ -10,18 +10,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout your repo
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      # 2. Setup Conftest (no manual download needed)
-      - name: Setup Conftest
-        uses: instrumenta/conftest-action@v0.3.0
+      - name: Install Conftest
+        run: |
+          wget https://github.com/open-policy-agent/conftest/releases/download/v0.45.0/conftest_0.45.0_Linux_x86_64.tar.gz
+          tar xzf conftest_0.45.0_Linux_x86_64.tar.gz
+          chmod +x conftest
+          sudo mv conftest /usr/local/bin/
 
-      # 3. Verify installation (optional but recommended)
       - name: Verify Conftest
         run: conftest --version
 
-      # 4. Run policy check
+      - name: Debug Files
+        run: ls -R
+
       - name: Run OPA Policy Check
         run: conftest test config.json --policy policy/
